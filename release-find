@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+var util = require('util');
+var async = require('async');
+var fs = require('fs');
+var mongoose = require('mongoose');
+var models = require('./models');
+
+var clientPrefix = 'CLIENT_';
+var indexPrefix = 'INDEX_';
+
+var mongourl = process.env.MONGODB_URI;
+
+mongoose.connect(mongourl, {
+    authSource: 'admin',
+    ssl: true
+});
+
+var find = function (name, done) {
+    models.Release.findOne({
+        type: 'serandomps',
+        name: name
+    }).sort({_id: -1}).exec(function (err, release) {
+        if (err) {
+            return done(err);
+        }
+        if (!release) {
+            return done(new Error(util.format('cannot find a release for client: %s', name)));
+        }
+        done(null, util.format('export %s%s=%s', indexPrefix, release.name.toUpperCase(), release.version));
+    });
+};
+
+var code = [];
+
+async.each(Object.keys(process.env), function (name, found) {
+    if (name.indexOf(clientPrefix) !== 0) {
+        return found();
+    }
+    var version = process.env[name];
+    if (version !== 'master') {
+        return found();
+    }
+    var client = name.substring(clientPrefix.length).toLowerCase();
+    find(client, function (err, release) {
+        if (err) {
+            return found(err);
+        }
+        code.push(release);
+        found();
+    });
+}, function (err) {
+    if (err) {
+        console.error(err);
+        return process.exit(1);
+    }
+    console.log(code.join('\\n'));
+    process.exit(0);
+});

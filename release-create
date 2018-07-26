@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+var mongoose = require('mongoose');
+var fs = require('fs');
+var models = require('./models');
+
+var name = process.argv[2];
+var version = process.argv[3];
+var revision = process.argv[4];
+
+var mongourl = process.env.MONGODB_URI;
+
+mongoose.connect(mongourl, {
+    authSource: 'admin',
+    ssl: true
+});
+
+models.Release.create({
+    type: 'serandomps',
+    name: name,
+    version: version,
+    revision: revision
+}, function (err) {
+    if (err) {
+        console.error(err);
+        return process.exit(1);
+    }
+    process.exit(0);
+});
