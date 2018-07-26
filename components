@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
 
-echo "starting"
-
 NAME=$1
 REVISION=$4
 REVISION=${REVISION:=master}
+
+npm install -g component@1.1.0
 
 echo "deploying revision ${REVISION} of repository ${NAME}"
 
 CURRENT=`pwd`
 
-npm install -g component@1.1.0
-
-npm install aws-sdk@2.4.5
-npm install async@2.6.0
-npm install node-uuid@1.4.7
-npm install mime-types@2.1.11
-npm install mongoose@5.1.8
-
-mkdir sources
-cd sources
-
-git clone https://github.com/serandomps/${NAME}.git
-cd ${NAME}
 git checkout ${REVISION}
 
 VERSION=`date +%s`
