@@ -10,17 +10,7 @@ echo "deploying revision ${REVISION} of repository ${NAME}"
 
 CURRENT=`pwd`
 
-git clone https://github.com/serandomps/${NAME}.git current
-cd current
-git checkout ${REVISION}
-
 npm install -g component@1.1.0
-
-VERSION=`date +%s`
-LOCATION=${NAME}/${VERSION}
-PREFIX=/${LOCATION}/
-
-component build --out ${NAME} --name index --prefix ${PREFIX}
 
 npm install aws-sdk@2.4.5
 npm install async@2.6.0
@@ -28,5 +18,20 @@ npm install node-uuid@1.4.7
 npm install mime-types@2.1.11
 npm install mongoose@5.1.8
 
-node components-uploader ${NAME} ${LOCATION}
+mkdir sources
+cd sources
+
+git clone https://github.com/serandomps/${NAME}.git
+cd ${NAME}
+git checkout ${REVISION}
+
+VERSION=`date +%s`
+LOCATION=${NAME}/${VERSION}
+PREFIX=/${LOCATION}/
+
+component build --out ${NAME} --name index --prefix ${PREFIX}
+
+cd ${CURRENT}
+
+node components-uploader $CURRENT/sources/${NAME} ${LOCATION}
 node release-create ${NAME} ${VERSION} ${REVISION}
