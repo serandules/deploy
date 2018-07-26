@@ -20,7 +20,7 @@ component build --out ${NAME} --name index --prefix ${PREFIX}
 
 cd ${CURRENT}
 
-node components-uploader $CURRENT/sources/${NAME} ${LOCATION}
-node release-create ${NAME} ${VERSION} ${REVISION}
+node .deploy/components-uploader $CURRENT/${NAME} ${LOCATION}
+node .deploy/release-create ${NAME} ${VERSION} ${REVISION}
 
 echo "released ${REVISION} of ${NAME} as ${VERSION}"
