@@ -11,6 +11,9 @@ echo "deploying revision ${REVISION} of repository ${NAME}"
 
 CURRENT=`pwd`
 
+pwd
+ls -alh
+
 git checkout ${REVISION}
 
 VERSION=`date +%s`
