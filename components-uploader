@@ -66,8 +66,10 @@ var upload = function (dir, parent, done) {
                 async.each(files, function (file, uploaded) {
                     upload(path.join(dir, file), parent + '/' + path.basename(file), uploaded);
                 }, done);
-            })
+            });
+            return;
         }
+        done();
     });
 };
 
