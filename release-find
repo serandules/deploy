@@ -15,7 +15,7 @@ mongoose.connect(mongourl, {
     ssl: true
 });
 
-var find = function (name, done) {
+var findRelease = function (name, done) {
     models.Release.findOne({
         type: 'serandomps',
         name: name
@@ -32,17 +32,26 @@ var find = function (name, done) {
 
 var code = [];
 
+var findClient = function (name) {
+    if (name !== 'CLIENT' && name.indexOf(clientPrefix) !== 0) {
+        return null;
+    }
+    var splits = process.env[name].split(':');
+    return {
+        name: splits[0],
+        version: splits[1]
+    };
+};
+
 async.each(Object.keys(process.env), function (name, found) {
-    if (name.indexOf(clientPrefix) !== 0) {
+    var client = findClient(name);
+    if (!client) {
         return found();
     }
-    var client = name.substring(clientPrefix.length).toLowerCase();
-    var value = process.env[name];
-    var version = value.substring(client.length);
-    if (version !== 'master') {
+    if (client.version !== 'master') {
         return found();
     }
-    find(client, function (err, release) {
+    findRelease(client.name, function (err, release) {
         if (err) {
             return found(err);
         }
