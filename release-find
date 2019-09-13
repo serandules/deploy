@@ -36,11 +36,12 @@ async.each(Object.keys(process.env), function (name, found) {
     if (name.indexOf(clientPrefix) !== 0) {
         return found();
     }
-    var version = process.env[name];
+    var client = name.substring(clientPrefix.length).toLowerCase();
+    var value = process.env[name];
+    var version = value.substring(client.length);
     if (version !== 'master') {
         return found();
     }
-    var client = name.substring(clientPrefix.length).toLowerCase();
     find(client, function (err, release) {
         if (err) {
             return found(err);
