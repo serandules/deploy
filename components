@@ -15,7 +15,7 @@ echo "current directory ${CURRENT}"
 
 git checkout ${REVISION} || true
 
-VERSION=`date +%s`
+VERSION=${PIPELINE_EXECUTION_ID:=master}
 LOCATION=${NAME}/${VERSION}
 PREFIX=/${LOCATION}/
 
