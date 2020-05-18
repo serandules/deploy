@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var mongoose = require('mongoose');
 var fs = require('fs');
+var path = require('path');
 var models = require('./models');
 
 var name = process.argv[2];
@@ -9,7 +10,7 @@ var revision = process.argv[4];
 
 var mongourl = process.env.MONGODB_URI;
 
-fs.writeFileSync('artifacts.json', JSON.stringify({
+fs.writeFileSync(path.join(version, 'artifacts.json'), JSON.stringify({
     type: 'serandomps',
     name: name,
     version: version,
