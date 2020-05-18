@@ -10,6 +10,8 @@ var revision = process.argv[4];
 
 var mongourl = process.env.MONGODB_URI;
 
+fs.mkdirSync(version);
+
 fs.writeFileSync(path.join(version, 'artifacts.json'), JSON.stringify({
     type: 'serandomps',
     name: name,
